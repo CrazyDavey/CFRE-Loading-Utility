@@ -12,6 +12,10 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using iTextSharp.text.pdf;
+using iTextSharp.text.pdf.parser;
+using Microsoft.Win32;
+
 
 namespace CFRE_Loading_Utility
 {
@@ -23,6 +27,39 @@ namespace CFRE_Loading_Utility
         public MainWindow()
         {
             InitializeComponent();
+
+        }
+        
+    public static string ExtractTextFromPdf(string path)
+    {
+        using (PdfReader reader = new PdfReader(path))
+        {
+            StringBuilder text = new StringBuilder();
+
+            for (int i = 1; i <= reader.NumberOfPages; i++)
+            {
+                text.Append(PdfTextExtractor.GetTextFromPage(reader, i));
+            }
+
+            return text.ToString();
         }
     }
+
+        private void button_Click(object sender, RoutedEventArgs e)
+        {
+            string selectedFile;
+            OpenFileDialog PDFpicker = new OpenFileDialog();
+            PDFpicker.Filter = "PDF Files (*.pdf)|*.pdf";
+            PDFpicker.FilterIndex = 1;
+            PDFpicker.Multiselect = false;
+
+            if (PDFpicker.ShowDialog() == true)
+                selectedFile = PDFpicker.FileName;
+            else
+                selectedFile = string.Empty;
+            string text = ExtractTextFromPdf(selectedFile);
+            MessageBox.Show(text);
+        }
+    }
+
 }
