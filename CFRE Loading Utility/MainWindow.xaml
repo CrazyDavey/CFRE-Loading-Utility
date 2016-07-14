@@ -5,10 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:CFRE_Loading_Utility"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525">
-    <Grid>
-        <Label x:Name="DaveSTUD" Content="DaveSTUD&#xD;&#xA;" HorizontalAlignment="Center" Margin="183,147,190,144" VerticalAlignment="Center" Height="28" Width="144" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
-        <Button x:Name="LoadPDF" Content="Load PDF" HorizontalAlignment="Center" Margin="217,180,225,119" VerticalAlignment="Center" Width="75" Click="button_Click"/>
-
-    </Grid>
+        Title="CFRE Loader Tools" Background="White" MouseMove="Window_MouseMove" d:DesignWidth="2011.088" d:DesignHeight="1129.295">
+    <StackPanel Background="LightSteelBlue">
+        <Button x:Name="LoadPDF" Content="Load PDF" HorizontalAlignment="Center" VerticalAlignment="Center" Click="LoadPDF_Click" Width="150" Height="50" Margin="0,25,0,0"/>
+        <DataGrid x:Name="PDFDataGrid" Height="700"/>
+    </StackPanel>
 </Window>

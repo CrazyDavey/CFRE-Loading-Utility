@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,6 +16,8 @@ using System.Windows.Shapes;
 using iTextSharp.text.pdf;
 using iTextSharp.text.pdf.parser;
 using Microsoft.Win32;
+using System.Configuration;
+using CFRE_Loading_Utility.Models;
 
 
 namespace CFRE_Loading_Utility
@@ -24,41 +27,47 @@ namespace CFRE_Loading_Utility
     /// </summary>
     public partial class MainWindow : Window
     {
+        readonly ObservableCollection<PDFRow> PDFtext;
+
         public MainWindow()
         {
             InitializeComponent();
-
+            PDFtext = new ObservableCollection<PDFRow>();
+            PDFDataGrid.ItemsSource = PDFtext;
         }
         
-    public static string ExtractTextFromPdf(string path)
-    {
-        using (PdfReader reader = new PdfReader(path))
+        private void ExtractTextFromPdf(string path)
         {
-            StringBuilder text = new StringBuilder();
-
-            for (int i = 1; i <= reader.NumberOfPages; i++)
+            if (path == string.Empty) return;
+            PDFtext.Clear();     
+            using (PdfReader reader = new PdfReader(path))
             {
-                text.Append(PdfTextExtractor.GetTextFromPage(reader, i));
+                for (int i = 1; i <= reader.NumberOfPages; i++)
+                {
+                    PDFtext.Add(new PDFRow {Row = PdfTextExtractor.GetTextFromPage(reader, i)});
+                }
             }
-
-            return text.ToString();
         }
-    }
 
-        private void button_Click(object sender, RoutedEventArgs e)
+        private void LoadPDF_Click(object sender, RoutedEventArgs e)
         {
             string selectedFile;
             OpenFileDialog PDFpicker = new OpenFileDialog();
             PDFpicker.Filter = "PDF Files (*.pdf)|*.pdf";
             PDFpicker.FilterIndex = 1;
             PDFpicker.Multiselect = false;
+            PDFpicker.InitialDirectory = ConfigurationManager.AppSettings.Get("StringPDFPath");
 
             if (PDFpicker.ShowDialog() == true)
                 selectedFile = PDFpicker.FileName;
             else
                 selectedFile = string.Empty;
-            string text = ExtractTextFromPdf(selectedFile);
-            MessageBox.Show(text);
+            ExtractTextFromPdf(selectedFile);           
+        }
+
+        private void Window_MouseMove(object sender, MouseEventArgs e)
+        {
+            this.Title = e.GetPosition(this).ToString();
         }
     }
 
